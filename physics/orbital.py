@@ -1,17 +1,20 @@
 from physics.constants import mu_earth
 import numpy as np
 
-def semi_major(peri, apo):
+def specific_energy(velocity, position, mu_earth):
 
-    a = (peri + apo) / 2 # semi-major axis
+    r = np.linalg.norm(position)
+    v = np.linalg.norm(velocity)
+
+    energy = v**2 / 2 - mu_earth / r
+
+    return energy
+
+def semi_major(mu_earth,energy):
+
+    a = -mu_earth / (2*energy) # semi-major axis
 
     return a
-
-def orbital_vel(mu_earth, a, rad_orbital):
-
-    vel_orb = np.sqrt(mu_earth * (2/rad_orbital - 1/a))
-
-    return vel_orb
 
 def orbital_period(a, mu_earth):
 
@@ -19,8 +22,23 @@ def orbital_period(a, mu_earth):
 
     return period
 
-def specific_energy(vel_orb, mu_earth, rad_orbital):
+def angular_mom(position, velocity):
 
-    energy = vel_orb**2 / 2 - mu_earth / rad_orbital
+    ang_mom = np.cross(position,velocity)
 
-    return energy
+    return ang_mom
+
+def eccentricity(velocity,ang_mom,position):
+
+    r = np.linalg.norm(position)
+    ecc_vec = np.cross(velocity,ang_mom) / mu_earth - position / r
+    e = np.linalg.norm(ecc_vec)
+
+    return ecc_vec, e
+
+def peri_apo(a,e):
+
+    periapsis = a * (1-e)
+    apoapsis = a * (1+e)
+
+    return periapsis, apoapsis

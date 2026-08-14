@@ -1,33 +1,29 @@
 import numpy as np
-from physics.constants import mu_earth, rad_earth
-from physics.orbital import orbital_vel, semi_major, orbital_period
+from physics.constants import mu_earth
+from physics.orbital import specific_energy, semi_major, orbital_period, angular_mom, eccentricity, peri_apo
 from physics.gravity import gravitational_acc
 from numerical.semi_euler import euler_int
 from numerical.RK4 import rk4_step
 
-## Simulation Conditions
+pos_init = np.array([6.771e6,0,0]) # initial position of satellite
 
-# Periapsis and Apoapsis (as altitudes)
-peri_alt = 400e+3
-apo_alt = 600e+3
+vel_init = np.array([0,7672.6,0]) # initial velocity of satellite
 
-# Update periapsis and apoapsis to be from centre of Earth
-peri_rad = peri_alt + rad_earth
-apo_rad = apo_alt + rad_earth
-a = semi_major(peri_rad, apo_rad)
+ener_init = specific_energy(vel_init, pos_init, mu_earth) # initial energy of satellite
+
+a = semi_major(mu_earth,ener_init) # semi-major axis
+
+ang_mom = angular_mom(pos_init, vel_init) # Angular momentum
+
+ecc_vec, e = eccentricity(vel_init,ang_mom,pos_init) # Eccentricity
+
+r_p, r_a = peri_apo(a,e) # Periapsis and Apoapsis
 
 # Time step
 dt = 10 # seconds
 
 # Total time 
 total_time = orbital_period(a,mu_earth) # seconds
-
-# Initial position of satellite
-pos_init = np.array([peri_rad,0,0])
-
-# Initial velocity of satellite
-speed = orbital_vel(mu_earth, a, peri_rad)
-vel_init = np.array([0,speed,0]) 
 
 # Simulation
 
