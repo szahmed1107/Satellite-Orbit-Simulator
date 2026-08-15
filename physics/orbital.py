@@ -3,10 +3,10 @@ import numpy as np
 
 def specific_energy(velocity, position, mu_earth):
 
-    r = np.linalg.norm(position)
-    v = np.linalg.norm(velocity)
+    r = np.linalg.norm(position, axis=-1)
+    v = np.linalg.norm(velocity, axis=-1)
 
-    energy = v**2 / 2 - mu_earth / r
+    energy = (v**2) / 2.0 - (mu_earth / r)
 
     return energy
 
