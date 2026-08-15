@@ -11,8 +11,10 @@ Numerically propagate satellite trajectories using Newtonian gravity and investi
 - Two-body Newtonian gravitational model
 - Earth gravitational parameter
 - Orbital initialisation from periapsis and apoapsis
-- Vis-viva equation for initial velocity
+- Vis-viva equation for angular momentum and state vector analysis
+- Classical orbital element (COE) initialisation
 - Orbital mechanics analysis
+- Perifocal frame to 3d Earth-Centered Intertial frame
 
 ### Numerical Methods
 
@@ -26,19 +28,17 @@ The simulator calculates:
 
 - Specific mechanical energy
 - Specific angular momentum
-- Eccentricity vector
-- Eccentricity
+- Eccentricity vector and magnitude
 - Semi-major axis
 - Orbital period
-- Periapsis
-- Apoapsis
+- Periapsis and Apoapsis distances
 
 ### Visualisation
 
-- 3D orbital trajectories
+- Interactive 3D orbital trajectories around an equal-aspect-ratio 3D Earth sphere
 - Comparison of numerical integration methods
 - Energy conservation error
-- Position error relative to RK4
+- Position error relative to RK4 (baseline)
 - Computation time vs. numerical error
 
 ### Numerical Investigation
@@ -56,9 +56,26 @@ The following quantities are investigated:
 
 The simulator solves the two-body equation of motion:
 
-a = -μr/r³
+a = -μr/r^3
 
-where μ is Earth's gravitational parameter.
+where μ is Earth's gravitational parameter and r is the satellite position vector in the Earth-Centered Inertial (ECI) frame.
+
+## Perifocal Initial Conditions
+
+The initial position and velocity are calculated in the perifocal orbital plane at periapsis.
+
+r_pqw = [r_p,0,0]
+v_pqw = [0,μ/h x (1+e),0]
+
+## Perifocal to ECI Transformation
+
+The initial state is transformed using:
+- Ω = right ascension of ascending node
+- i = inclination
+- ω = argument of periapsis
+
+r_ECI = R.r_pqw
+v_ECI = R.v_pqw
 
 ### Conserved Orbital Quantities
 
@@ -66,7 +83,7 @@ For an ideal two-body orbit, specific mechanical energy and specific angular mom
 
 #### Specific Mechanical Energy
 
-ε = v²/2 - μ/r
+ε = v^2/2 - μ/r
 
 #### Specific Angular Momentum
 
@@ -78,23 +95,21 @@ e = (v × h)/μ - r/r
 
 #### Orbital Period
 
-T = 2π√(a³/μ)
+T = 2π√(a^3/μ)
 
 #### Periapsis and Apoapsis
 
-rₚ = a(1-e)
+r_p = a(1-e)
 
-rₐ = a(1+e)
+r_a = a(1+e)
 
-## Results
+## Performance & Numerical Results
 
 The numerical investigation demonstrates the trade-off between computational cost and numerical accuracy.
 
 RK4 provides significantly greater accuracy than Heun for a given timestep, at the cost of additional computation. Despite being a 1st-order method, Semi-Implicit Euler outperforms 2nd-order Heun's method in energy conservation due to its phase-space volume-preserving properties.
 
 The effect of timestep size on energy and position error is also investigated.
-
-## Performance & Numerical Results (Level 3)
 
 ![Performance Trade-off](analysis/Performance%20Tradeoff%20-%20Computation%20time%20vs%20rel%20error.png)
 
@@ -104,13 +119,15 @@ The effect of timestep size on energy and position error is also investigated.
 
 *Figure 2: Specific mechanical energy discrepancy and position error relative to the RK4 baseline over time.*
 
+![3D Orbit Simulation](analysis/Orbit%20Simulation%201%20-%20Semi-Implicit%20Euler%20vs%20RK4%20vs%20Heun.png)
+
+*Figure 3:3D inclined satellite orbit propagation comparing Semi-Implicit Euler, Heun, and RK4 around a 3D Earth spherical model.*
+
 ## Future Development
 
 - Atmospheric drag model
 - J₂ gravitational perturbation
-- Three-dimensional orbital elements
 - Orbital manoeuvres
 - Hohmann transfer simulation
-- Improved visualisation
 - Automated validation tests
 

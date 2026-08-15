@@ -1,26 +1,21 @@
 import numpy as np
-from physics.constants import mu_earth
-from physics.orbital import (specific_energy, semi_major, 
-                             orbital_period, angular_mom, 
-                             eccentricity, peri_apo)
+from physics.constants import mu_earth, rad_earth
+from physics.orbital import (specific_energy,
+                             orbital_period,
+                             elements_to_state)
 from physics.gravity import gravitational_acc
 from numerical.semi_euler import euler_int
 from numerical.RK4 import rk4_step
 from numerical.Heun import heun_int
 
-pos_init = np.array([6.771e6,0,0]) # initial position of satellite
+h_p = float(input("Enter altitude (in km): "))
+e = float(input("Enter eccentricity: "))
+inc_deg = float(input("Enter inclination (in degrees): "))
+omega_deg = float(input("Enter argument of periapsis (in degrees): "))
 
-vel_init = np.array([0,7672.6,0]) # initial velocity of satellite
+pos_init, vel_init, a = elements_to_state(rad_earth, mu_earth, h_p, e, inc_deg, omega_deg) # initial position of satellite
 
 eps_init = specific_energy(vel_init, pos_init, mu_earth) # initial energy of satellite
-
-a = semi_major(mu_earth,eps_init) # semi-major axis
-
-ang_mom = angular_mom(pos_init, vel_init) # Angular momentum
-
-ecc_vec, e = eccentricity(vel_init,ang_mom,pos_init) # Eccentricity
-
-r_p, r_a = peri_apo(a,e) # Periapsis and Apoapsis
 
 # Time step
 dt = 10 # seconds
