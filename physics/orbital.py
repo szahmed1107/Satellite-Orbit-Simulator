@@ -34,7 +34,7 @@ def elements_to_state(rad_earth, mu_earth, h_p, e, inc_deg, omega_deg):
         raise ValueError("Eccentricity must be e < 1.0 for closed orbits.")
 
     # Orbital geometry & invariants
-    r_p = rad_earth + h_p*1000    # Periapsis radius (m)
+    r_p = rad_earth + h_p   # Periapsis radius (m)
     a = r_p / (1.0 - e)    # Semi-major axis (m)
     h = np.sqrt(mu_earth * a * (1.0 - e**2))    # Specific angular momentum (m^2/s)
 

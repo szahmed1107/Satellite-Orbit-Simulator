@@ -2,7 +2,7 @@ import numpy as np
 
 # Semi-implicit Euler integration
 
-def euler_int(pos_init, vel_init, total_time, dt, mu_earth, gravitational_acc):
+def euler_int(pos_init, vel_init, total_time, dt, total_acceleration):
 
     steps = int(total_time / dt)
 
@@ -12,9 +12,8 @@ def euler_int(pos_init, vel_init, total_time, dt, mu_earth, gravitational_acc):
     v = vel_init.copy()
 
     for i in range(steps):
-
-        g = gravitational_acc(mu_earth, x)
-        v = v + g*dt
+        a_tot = total_acceleration(x,v)
+        v = v + a_tot*dt
         x = x + v*dt
 
         positions.append(x.copy())

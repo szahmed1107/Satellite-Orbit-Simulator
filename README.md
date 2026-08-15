@@ -31,7 +31,8 @@ The simulator calculates:
 - Eccentricity vector and magnitude
 - Semi-major axis
 - Orbital period
-- Periapsis and Apoapsis distances
+- Periapsis and apoapsis distances
+- Satellite altitude
 
 ### Visualisation
 
@@ -56,9 +57,27 @@ The following quantities are investigated:
 
 The simulator solves the two-body equation of motion:
 
-a = -μr/r^3
+a_g = -μr/|r|^3
 
 where μ is Earth's gravitational parameter and r is the satellite position vector in the Earth-Centered Inertial (ECI) frame.
+
+Atmospheric drag is also included in the total acceleration:
+
+a_d = - 1/2 x ρ x (C_dxA)/m x v|v|
+
+where:
+
+ρ is atmospheric density
+C_d is the drag coefficient
+A is the satellite cross-sectional area
+m is satellite mass
+v is the velocity vector
+
+The total acceleration is therefore:
+
+a = a_g + a_d
+
+The atmospheric model uses the International Standard Atmosphere (ISA) for lower altitudes and an exponential density model for the higher Low Earth Orbit (LEO) region.
 
 ## Perifocal Initial Conditions
 
@@ -91,7 +110,7 @@ h = r × v
 
 #### Eccentricity Vector
 
-e = (v × h)/μ - r/r
+e = (v × h)/μ - r/|r|
 
 #### Orbital Period
 
@@ -125,7 +144,6 @@ The effect of timestep size on energy and position error is also investigated.
 
 ## Future Development
 
-- Atmospheric drag model
 - J₂ gravitational perturbation
 - Orbital manoeuvres
 - Hohmann transfer simulation

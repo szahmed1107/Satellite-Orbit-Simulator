@@ -1,7 +1,7 @@
 import numpy as np
 from physics.constants import mu_earth
 
-def gravitational_acc(mu_earth, position):
+def gravitational_acc(position, mu_earth):
 
     distance = np.linalg.norm(position)
 
